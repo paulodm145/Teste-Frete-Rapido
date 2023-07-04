@@ -11,9 +11,21 @@ class QuoteService
         $this->integrationFreteRapidoAPIService = $integrationFreteRapidoAPIService;
     }
 
-    public function Simulate()
+    public function Simulate(array $data)
     {
-        return $this->integrationFreteRapidoAPIService->Simulate();
+        $offers = $this->integrationFreteRapidoAPIService->Simulate($data)['dispatchers'][0]['offers'];
+
+        $offersList = [];
+        foreach ($offers as $offer) {
+            $offersList[] = [
+                "name"     => $offer['carrier']['name'],
+                "service"  => $offer['service'],
+                "deadline" => $offer['carrier']['name'],
+                "price"    => $offer['final_price'],
+            ];
+        }
+
+        return $offersList;
     }
 
 }

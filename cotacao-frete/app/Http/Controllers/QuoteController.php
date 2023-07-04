@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\IntegrationFreteRapidoAPIService;
+use App\Services\QuoteService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
@@ -10,6 +11,14 @@ use Illuminate\Support\Facades\Validator;
 
 class QuoteController extends Controller
 {
+
+    private $quoteService;
+
+    public function __construct(QuoteService $quoteService)
+    {
+        $this->quoteService = $quoteService;
+    }
+
     public function quote(Request $request)
     {
 
@@ -32,61 +41,7 @@ class QuoteController extends Controller
             return response($validator->errors(), 400);
         }
 
+        return response($this->quoteService->Simulate($request->all()), 200);
 
-        $array = [
-            "shipper" => [
-                "registered_number" => "25438296000158",
-                "token" => "1d52a9b6b78cf07b08586152459a5c90",
-                "platform_code" => "5AKVkHqCn"
-            ],
-            "recipient" => [
-                "type" => 0,
-                "registered_number" => "",
-                "state_inscription" => "",
-                "country" => "BRA",
-                "zipcode" => $request->recipient["address"]["zipcode"] + 0
-            ],
-            "dispatchers" => [
-                [
-                    "registered_number" => "25438296000158",
-                    "zipcode" => 29161376,
-                    "total_price" => 0.0,
-                    "volumes" => [
-                            [
-                                "amount" => 1,  //Já tenho
-                                "amount_volumes" => 1,  //Já tenho
-                                "category" => "7", //Já tenho
-                                "sku" => "abc-teste-527",  //Já tenho
-                                "tag" => "ABCTESTE",
-                                "description" => "ABC TESTE",
-                                "height" => 0.2,  //Já tenho
-                                "width" => 0.2,  //Já tenho
-                                "length" => 0.2,  //Já tenho
-                                "unitary_price" => 500,
-                                "unitary_weight" => 4, //Já tenho
-                                "consolidate" => false,
-                                "overlaid" => false,
-                                "rotate" => false
-                        ]
-                    ]
-                ]
-            ],
-            "channel" => "",
-            "filter" => 0,
-            "limit" => 0,
-            "identification" => "",
-            "reverse" => false,
-            "simulation_type" => [0],
-            "returns" => [
-                "composition" => false,
-                "volumes" => false,
-                "applied_rules" => false
-            ]
-        ];
-//
-        //$response = Http::post('https://sp.freterapido.com/api/v3/quote/simulate', $array);
-        $response = (new IntegrationFreteRapidoAPIService())->Simulate();
-
-        return $response;
     }
 }

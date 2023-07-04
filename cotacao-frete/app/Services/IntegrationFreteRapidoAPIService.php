@@ -13,10 +13,12 @@ class IntegrationFreteRapidoAPIService
     const PLATFORM_CODE = "5AKVkHqCn";
     const REGISTERED_NUMBER = "25438296000158";
 
+
     /**
-     * @return Response|string
+     * @param array $data
+     * @return array|string
      */
-    public function Simulate()
+    public function Simulate(array $data)
     {
         try {
 
@@ -31,31 +33,14 @@ class IntegrationFreteRapidoAPIService
                     "registered_number" => self::REGISTERED_NUMBER,
                     "state_inscription" => "",
                     "country" => "BRA",
-                    "zipcode" => 1311000
+                    "zipcode" => $data["recipient"]["address"]["zipcode"] + 0,
                 ],
                 "dispatchers" => [
                     [
                         "registered_number" => self::REGISTERED_NUMBER,
                         "zipcode" => 29161376,
                         "total_price" => 0.0,
-                        "volumes" => [
-                            [
-                                "amount" => 1,  //Já tenho
-                                "amount_volumes" => 1,  //Já tenho
-                                "category" => "7", //Já tenho
-                                "sku" => "abc-teste-527",  //Já tenho
-                                "tag" => "ABCTESTE",
-                                "description" => "ABC TESTE",
-                                "height" => 0.2,  //Já tenho
-                                "width" => 0.2,  //Já tenho
-                                "length" => 0.2,  //Já tenho
-                                "unitary_price" => 500,
-                                "unitary_weight" => 4, //Já tenho
-                                "consolidate" => false,
-                                "overlaid" => false,
-                                "rotate" => false
-                            ]
-                        ]
+                        "volumes" => $this->buildVolumes($data["volumes"])
                     ]
                 ],
                 "channel" => "",
@@ -76,6 +61,34 @@ class IntegrationFreteRapidoAPIService
         } catch (\Exception $e) {
             return $e->getMessage();
         }
+    }
+
+    /**
+     * @param array $volumes
+     * @return array
+     */
+    private function buildVolumes(array $volumes) : array
+    {
+        $volumesList = [];
+        foreach($volumes as $volume) {
+            $volumesList[] = [
+                "amount"            => $volume["amount"],
+                "amount_volumes"    => 1,
+                "category"          => (string)$volume["category"],
+                "sku"               => $volume["sku"],
+                "tag"               => array_key_exists('tag', $volume) ? $volume["tag"] : "",
+                "description"       => array_key_exists('description', $volume) ? $volume["tag"] : "",
+                "height"            => $volume["height"],
+                "width"             => $volume["width"],
+                "length"            => $volume["length"],
+                "unitary_price"     => $volume["price"],
+                "unitary_weight"    => $volume["unitary_weight"],
+                "consolidate"       => array_key_exists('consolidate', $volume) ? $volume["tag"] : false,
+                "overlaid"          => array_key_exists('overlaid', $volume) ? $volume["tag"] : false,
+                "rotate"            => array_key_exists('rotate', $volume) ? $volume["tag"] : false
+            ];
+        }
+        return $volumesList;
     }
 
 
