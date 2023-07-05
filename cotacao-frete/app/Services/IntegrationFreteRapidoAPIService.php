@@ -18,7 +18,7 @@ class IntegrationFreteRapidoAPIService
      * @param array $data
      * @return array|string
      */
-    public function Simulate(array $data)
+    public function quote(array $data)
     {
         try {
 

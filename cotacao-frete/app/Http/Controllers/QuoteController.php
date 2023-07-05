@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\IntegrationFreteRapidoAPIService;
 use App\Services\QuoteService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
-
 
 class QuoteController extends Controller
 {
@@ -41,7 +38,7 @@ class QuoteController extends Controller
             return response($validator->errors(), 400);
         }
 
-        return response($this->quoteService->Simulate($request->all()), 200);
+        return response($this->quoteService->quote($request->all()), 200);
 
     }
 }
