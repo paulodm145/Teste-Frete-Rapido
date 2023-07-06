@@ -3,10 +3,10 @@ Consiste no desenvolvimento de uma API com dois endpoins sendo uma para a reliza
 
 ## Tecnologias  
 
- - PHP 8
- - Laravel 10
- - Docker - Laradock
- - Banco de dados MYSQL
+ - PHP 8  
+ - Laravel 10  
+ - Docker - Laradock  
+ - Banco de dados MYSQL  
  - NGINX  
 
  **Observações: ** Link da documentação do Laradock : [Acessar](https://laradock.io/getting-started/)
@@ -22,11 +22,11 @@ Após a conclusão da criação dos containers utilizar o seguinte comando:
 
 Já estando dentro do container seguir os passos abaixo:
 
-> cp .env.example .env
+> cp .env.example .env  
 > composer install  
-> php artisan key:generate
-> php artisan migrate:install
-> php artisan migrate
+> php artisan key:generate  
+> php artisan migrate:install  
+> php artisan migrate  
   
   ## Endpoints
 Concluída a instalação a aplicação ficará disponível na seguinte url : http://localhost
