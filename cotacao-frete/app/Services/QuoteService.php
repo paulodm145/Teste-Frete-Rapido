@@ -56,10 +56,9 @@ class QuoteService extends BaseService
 
                 $this->createQuote($offer['carrier']['registered_number'], $offer['service'], (float)$offer['final_price']);
 
-
             }
 
-            return $offersList;
+            return ["carrier" => $offersList];
 
         } catch (\Exception $e) {
             throw new ServiceException("Erro: {$e->getMessage()}", 500);

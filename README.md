@@ -5,22 +5,28 @@ Consiste no desenvolvimento de uma API com dois endpoins sendo uma para a reliza
 
  - PHP 8
  - Laravel 10
- - Docker
+ - Docker - Laradock
  - Banco de dados MYSQL
- - NGINX
+ - NGINX  
+
+ **Observações: ** Link da documentação do Laradock : [Acessar](https://laradock.io/getting-started/)
 
 ## Instruções
 Ao clonar este repositório acessar a pasta laradock e executar o seguinte comando:
 
 >  docker-compose up -d nginx php-fpm mysql
 
-Após subir a conclusão da criação dos containers utilizar o seguinte comando:
+Após a conclusão da criação dos containers utilizar o seguinte comando:
 
 > docker-compose exec workspace bash  
 
-Já estando dentro do container seguir com a instalação das dependências através do composer a partir do comando:
+Já estando dentro do container seguir os passos abaixo:
 
-> composer install
+> cp .env.example .env
+> composer install  
+> php artisan key:generate
+> php artisan migrate:install
+> php artisan migrate
   
   ## Endpoints
 Concluída a instalação a aplicação ficará disponível na seguinte url : http://localhost
@@ -29,7 +35,7 @@ Concluída a instalação a aplicação ficará disponível na seguinte url : ht
 
 Objeto a ser enviado:
 
-```json
+```json  
 {
    "recipient":{
       "address":{
@@ -59,4 +65,51 @@ Objeto a ser enviado:
       }
    ]
 }
+```  
+Resultado esperado:  
+```json  
+{
+   "carrier":[
+      {
+         "name":"EXPRESSO FR",
+         "service":"Rodoviário",
+         "deadline":"3",
+         "price":17
+      },
+      {
+         "name":"Correios",
+         "service":"SEDEX",
+         "deadline":1,
+         "price":20.99
+      }
+   ]
+}
+``` 
+
+**Rota 2: GET - .../metrics?last_quotes={?}**  
+Esta rota consulta os registros cadastrados no banco de dados onde o parametro "last_quotes" define o número de cotações em ordem decrescente. 
+Neste endpoint será mostrado uma listagem com as seguintes informações:
+
+- Quantidade de resultados por transportadora;
+- Total de “preco_frete” por transportadora; (final_price na API)
+- Média de “preco_frete” por transportadora; (final_price na API)
+- O frete mais barato geral;
+- O frete mais caro geral;
+
+Retorno esperado:  
+```json  
+[
+	{
+		"carrier_name": "CORREIOS",
+		"quantity_results": 6,
+		"total_price_shipping": "666.32",
+		"average_shipping_price": "111.053333",
+		"general_cheapest_shipping": "78.03",
+		"most_expensive_shipping_overall": "162.68"
+	},
+    {....}, 
+    {....}
+]
 ```
+
+
