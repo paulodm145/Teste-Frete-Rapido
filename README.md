@@ -1,5 +1,5 @@
 # Desafio BackEnd Frete Rápido  
-Consiste no desenvolvimento de uma API com dois endpoins sendo uma para a relização de cotações de frete a partir de um objeto JSON e um para a coleta de métricas através de um parametro indicando a quantidade de registros a serem cotados. 
+Consiste no desenvolvimento de uma API com dois endpoins sendo uma para a relização de cotações de frete a partir de um objeto JSON com integração a API disponibilizada pela empresa **Frete Rápido** e um para a coleta de métricas através de um parametro indicando a quantidade de registros a serem cotados. 
 
 ## Tecnologias  
 
@@ -9,7 +9,7 @@ Consiste no desenvolvimento de uma API com dois endpoins sendo uma para a reliza
  - Banco de dados MYSQL  
  - NGINX  
 
- **Observações: ** Link da documentação do Laradock : [Acessar](https://laradock.io/getting-started/)
+ **Observações:** Link da documentação do Laradock : [Acessar](https://laradock.io/getting-started/)
 
 ## Instruções
 Ao clonar este repositório acessar a pasta laradock e executar o seguinte comando:
