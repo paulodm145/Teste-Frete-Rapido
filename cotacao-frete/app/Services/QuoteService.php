@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Exceptions\ServiceException;
 use App\Repositories\QuoteRepository;
+use mysql_xdevapi\Collection;
 
 class QuoteService extends BaseService
 {
@@ -25,6 +27,11 @@ class QuoteService extends BaseService
         parent::__construct($quoteRepository);
     }
 
+    /**
+     * @param array $dataQuote
+     * @return array
+     * @throws ServiceException
+     */
     public function quote(array $dataQuote)
     {
         try {
@@ -40,34 +47,95 @@ class QuoteService extends BaseService
                     "price" => $offer['final_price'],
                 ];
 
-                $idCompany = $this->createCompanie([
+                $this->createCompanie([
                     "name" => $offer['carrier']['name'],
                     "registered_number" => $offer['carrier']['registered_number'],
-                ])->id;
+                ]);
 
-                $serviceCompany = $this->serviceService->getServiceByRegisteredNumberAndDescription($offer['carrier']['registered_number'], $offer['service']);
-                if($serviceCompany->isEmpty()) {
-                    $this->serviceService->create([
-                        "description" => $offer['service'],
-                        "company_id" => $idCompany,
-                    ]);
-                }
+                $this->createService($offer['carrier']['registered_number'], $offer['service']);
+
+                $this->createQuote($offer['carrier']['registered_number'], $offer['service'], (float)$offer['final_price']);
+
+
             }
 
             return $offersList;
 
         } catch (\Exception $e) {
-            return $e->getMessage();
+            throw new ServiceException("Erro: {$e->getMessage()}", 500);
         }
     }
 
-    public function createCompanie(array $dataCompany) {
-        return $this->companyService->createMultipliesCompanies([
-            "name" => $dataCompany['name'],
-            "registered_number" => $dataCompany['registered_number'],
-        ]);
+    /**
+     * @param array $dataCompany
+     * @return false|mixed
+     * @throws ServiceException
+     */
+    public function createCompanie(array $dataCompany)
+    {
+        try {
+
+            return $this->companyService->createCompanyIfNotExists([
+                "name" => $dataCompany['name'],
+                "registered_number" => $dataCompany['registered_number'],
+            ]);
+
+        } catch (\Exception $e) {
+            throw new ServiceException("Erro: {$e->getMessage()}", 500);
+        }
     }
 
+    /**
+     * @param string $registeredNumber
+     * @param string $serviceDescription
+     * @return mixed
+     * @throws ServiceException
+     */
+    public function createService(string $registeredNumber, string $serviceDescription)
+    {
 
+        try {
+
+            $service = $this->serviceService->getServiceByRegisteredNumberAndDescription($registeredNumber, $serviceDescription);
+
+            $company = $this->companyService->searchBy('registered_number', $registeredNumber)->first();
+
+            if (!$service) {
+                $this->serviceService->create([
+                    "company_id" => $company->id,
+                    "description" => $serviceDescription,
+                ]);
+            }
+
+            return $service;
+
+        } catch (\Exception $e) {
+            throw new ServiceException("Erro: {$e->getMessage()}", 500);
+        }
+    }
+
+    /**
+     * @param string $registeredNumber
+     * @param string $serviceDescription
+     * @param float $price
+     * @return mixed
+     * @throws ServiceException
+     */
+    public function createQuote(string $registeredNumber, string $serviceDescription, float $price)
+    {
+        try {
+            $serviceId = $this->serviceService
+                ->getServiceByRegisteredNumberAndDescription($registeredNumber, $serviceDescription)
+                ->service_id;
+
+            return $this->repository->create([
+                "service_id" => $serviceId,
+                "price" => $price,
+            ]);
+
+        } catch (\Exception $e) {
+            throw new ServiceException("Erro: {$e->getMessage()}", 500);
+        }
+    }
 
 }

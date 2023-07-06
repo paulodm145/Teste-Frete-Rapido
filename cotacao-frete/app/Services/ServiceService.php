@@ -11,6 +11,11 @@ class ServiceService extends BaseService
         parent::__construct($serviceRepository);
     }
 
+    /**
+     * @param $registeredNumber
+     * @param $description
+     * @return mixed
+     */
     public function getServiceByRegisteredNumberAndDescription($registeredNumber, $description)
     {
         return $this->repository->getServiceByRegisteredNumberAndDescription($registeredNumber, $description);

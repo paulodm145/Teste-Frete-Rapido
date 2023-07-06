@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\ServiceException;
 use App\Repositories\CompanyRepository;
 
 class CompanyService extends BaseService
@@ -15,14 +16,30 @@ class CompanyService extends BaseService
      * @param array $companyData
      * @return mixed
      */
-    public function createMultipliesCompanies(array $companyData) {
+    public function createCompanyIfNotExists(array $companyData)
+    {
 
-        $checkExistsCompany = $this->repository->searchBy('registered_number', $companyData['registered_number']);
-
-        if($checkExistsCompany->isEmpty()) {
-            return $this->repository->create($companyData);
+        try {
+            $checkExistsCompany = $this->repository->searchBy('registered_number', $companyData['registered_number']);
+            if ($checkExistsCompany->isEmpty()) {
+                return $this->repository->create($companyData);
+            }
+            return false;
+        } catch (\Exception $e) {
+            throw new ServiceException("Erro: {$e->getMessage()}", 500);
         }
+    }
 
-        return false;
+    /**
+     * @param int $limit
+     * @return mixed
+     * @throws ServiceException
+     */
+    public function lastQuotes(int $limit = 50) {
+        try {
+            return $this->repository->metrics($limit);
+        } catch (\Exception $e) {
+            throw new ServiceException("Erro: {$e->getMessage()}", 500);
+        }
     }
 }

@@ -128,4 +128,14 @@ abstract class BaseService
         }
     }
 
+    public function searchBy($field, $value)
+    {
+        try {
+            return $this->repository->searchBy($field, $value);
+        } catch (\Exception $e) {
+            logger()->error($e->getMessage());
+            throw new ServiceException("Erro ao deletar registro: {$e->getMessage()}", 500);
+        }
+    }
+
 }

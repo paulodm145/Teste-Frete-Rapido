@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ServiceException;
 use App\Services\QuoteService;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 
 class QuoteController extends Controller
@@ -16,6 +20,11 @@ class QuoteController extends Controller
         $this->quoteService = $quoteService;
     }
 
+    /**
+     * @param Request $request
+     * @return Application|ResponseFactory|\Illuminate\Foundation\Application|Response
+     * @throws ServiceException
+     */
     public function quote(Request $request)
     {
 
@@ -41,4 +50,5 @@ class QuoteController extends Controller
         return response($this->quoteService->quote($request->all()), 200);
 
     }
+
 }

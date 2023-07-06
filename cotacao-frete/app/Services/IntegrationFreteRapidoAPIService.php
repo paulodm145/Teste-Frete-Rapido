@@ -7,11 +7,11 @@ use Illuminate\Support\Facades\Http;
 
 class IntegrationFreteRapidoAPIService
 {
-
     const URL = "https://sp.freterapido.com/api/v3";
     const TOKEN = "1d52a9b6b78cf07b08586152459a5c90";
     const PLATFORM_CODE = "5AKVkHqCn";
     const REGISTERED_NUMBER = "25438296000158";
+    const ZIP_CODE = 29161376;
 
 
     /**
@@ -38,7 +38,7 @@ class IntegrationFreteRapidoAPIService
                 "dispatchers" => [
                     [
                         "registered_number" => self::REGISTERED_NUMBER,
-                        "zipcode" => 29161376,
+                        "zipcode" => self::ZIP_CODE,
                         "total_price" => 0.0,
                         "volumes" => $this->buildVolumes($data["volumes"])
                     ]
