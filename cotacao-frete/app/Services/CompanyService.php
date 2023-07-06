@@ -22,7 +22,7 @@ class CompanyService extends BaseService
         try {
             $checkExistsCompany = $this->repository->searchBy('registered_number', $companyData['registered_number']);
             if ($checkExistsCompany->isEmpty()) {
-                return $this->repository->create($companyData);
+                return $this->create($companyData);
             }
             return false;
         } catch (\Exception $e) {
